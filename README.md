@@ -19,14 +19,16 @@ Create a production build with `npm run build`. The generated site is in `dist/`
 - Replace `src/img/profile.png` with a portrait image of the same name.
 
 Project image folders use each project's `slug` from `projects.ts`:
+Image folders are pre-created using the `slug` from `src/data/projects.ts`:
 
-```text
-src/img/<project-slug>/thumbnail/
-src/img/<project-slug>/appicon/
-src/img/<project-slug>/screenshots/
-```
+- `src/img/livewallpaper-macos/`
+- `src/img/advance-wallpaper-manager/`
+- `src/img/glow-player/`
+- `src/img/yt-music-downloader/`
+- `src/img/vector-vertex/`
+- `src/img/tvisualiser/`
 
-Add PNG, JPG, JPEG, WebP, or AVIF files. The thumbnail is preferred for cards, then the app icon, then screenshots. The project dialog provides a small gallery when more than one image is available. Projects without images use the built-in terminal-style fallback.
+Each project folder contains `thumbnail/`, `appicon/`, and `screenshots/` subfolders. Add `.png`, `.jpg`, `.jpeg`, `.webp`, or `.avif` images with lowercase extensions. No exact filename is required. For predictable selection, use names such as `01-cover.webp`, `02-detail.png`, and `03-settings.jpg`; the card uses the first alphabetical image in `thumbnail/`, falling back to `appicon/` and then `screenshots/`. The project dialog displays the available images as a gallery. Projects without images use the built-in terminal-style fallback.
 
 Link icons are selected from the URL: GitHub repositories use a branch icon, release/download URLs use a download icon, and other destinations use an external-link icon.
 

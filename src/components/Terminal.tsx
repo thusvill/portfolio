@@ -171,6 +171,12 @@ function Terminal({ onOpenProject, onExit, onToggleTheme, onSetFontSize, fontSiz
     if (event.key === 'Tab' && suggestions.length > 0) {
       event.preventDefault()
       acceptSuggestion(suggestions[selectedSuggestionIndex] ?? suggestions[0])
+    } else if (suggestions.length > 0 && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+      event.preventDefault()
+      const direction = event.key === 'ArrowDown' ? 1 : -1
+      setSelectedSuggestionIndex((currentIndex) =>
+        (currentIndex + direction + suggestions.length) % suggestions.length,
+      )
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
       historyIndexRef.current = Math.max(0, historyIndexRef.current - 1)

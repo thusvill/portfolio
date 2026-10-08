@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowUpRight, BriefcaseBusiness, GitBranch, Keyboard, Moon, Sun } from 'lucide-react'
 import ProjectDialog from './components/ProjectDialog'
+import MatrixBackground from './components/MatrixBackground'
 import ProjectGrid from './components/ProjectGrid'
 import ShortcutsTutorial from './components/ShortcutsTutorial'
 import SkillsSection from './components/SkillsSection'
@@ -77,6 +78,7 @@ function PortfolioApp() {
   return (
     <div className="site-shell">
       <div className="ambient-pattern" aria-hidden="true" />
+      <MatrixBackground />
       <div className="custom-crosshair" ref={cursorRef} aria-hidden="true">
         <span className="crosshair-arm crosshair-arm--top" />
         <span className="crosshair-arm crosshair-arm--right" />

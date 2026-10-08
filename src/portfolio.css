@@ -29,7 +29,7 @@
 html {
   min-width: 280px;
   scroll-behavior: smooth;
-  scroll-padding-top: 76px;
+  scroll-padding-top: 88px;
 }
 
 body {
@@ -70,8 +70,59 @@ html, body, *, *::before, *::after { scrollbar-width: none; }
   animation: pattern-drift 48s linear infinite;
 }
 
+.matrix-background {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+.matrix-column {
+  position: absolute;
+  top: -100vh;
+  width: 18px;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: calc(12px * var(--font-scale, 1));
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  overflow-wrap: anywhere;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  animation: matrix-rain var(--matrix-duration) linear var(--matrix-delay) infinite;
+  will-change: transform;
+}
+
 :root[data-theme='dark'] .ambient-pattern { filter: invert(1); opacity: 0.13; }
 @keyframes pattern-drift { to { background-position: 32px 32px; } }
+@keyframes matrix-rain { to { transform: translate3d(0, 200vh, 0); } }
+
+dialog {
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 140ms ease-out, transform 140ms ease-out, display 140ms allow-discrete;
+}
+
+dialog[open] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+dialog::backdrop {
+  opacity: 0;
+  transition: opacity 140ms ease-out, display 140ms allow-discrete;
+}
+
+dialog[open]::backdrop { opacity: 1; }
+
+@starting-style {
+  dialog[open] { opacity: 0; transform: scale(0.985); }
+  dialog[open]::backdrop { opacity: 0; }
+}
+
 .custom-crosshair { display: none; }
 
 @media (pointer: fine) {
@@ -119,11 +170,13 @@ html, body, *, *::before, *::after { scrollbar-width: none; }
 }
 
 .topbar {
-  position: relative;
-  z-index: 2;
+  position: sticky;
+  z-index: 20;
+  top: 0;
   min-height: 82px;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
+  background: var(--paper);
 }
 
 .wordmark { gap: 10px; font-size: calc(12px * var(--font-scale, 1)); font-weight: 600; }
@@ -356,7 +409,7 @@ h2 { margin-bottom: 0; font-size: calc(clamp(25px, 3vw, 36px) * var(--font-scale
 }
 
 @media (max-width: 620px) {
-  html { scroll-padding-top: 62px; }
+  html { scroll-padding-top: 72px; }
   .site-shell { width: calc(100% - 32px); }
   .topbar { min-height: 68px; }
   .wordmark { gap: 7px; font-size: calc(10px * var(--font-scale, 1)); }
@@ -442,6 +495,9 @@ h2 { margin-bottom: 0; font-size: calc(clamp(25px, 3vw, 36px) * var(--font-scale
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .matrix-background { opacity: 0.08; }
+  .matrix-column { top: 0; animation: none; transform: none; }
+  dialog, dialog::backdrop { transition: none; }
   *, *::before, *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
