@@ -89,20 +89,28 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
           <h2 id="dialog-project-title">{project.name}</h2>
           <p className="dialog-description">{project.description}</p>
 
-          <dl className="dialog-meta">
-            <div>
-              <dt className="dialog-meta-label">Status</dt>
-              <dd className="dialog-meta-value">{project.isOngoing === undefined ? 'Not listed' : project.isOngoing ? 'Ongoing' : 'Completed'}</dd>
-            </div>
-            <div>
-              <dt className="dialog-meta-label">Duration</dt>
-              <dd className="dialog-meta-value">{project.timeDuration ?? 'Not listed'}</dd>
-            </div>
-            <div>
-              <dt className="dialog-meta-label">Age at the time</dt>
-              <dd className="dialog-meta-value">{project.ageWhenMade === undefined ? 'Not listed' : project.ageWhenMade}</dd>
-            </div>
-          </dl>
+          {(project.isOngoing !== undefined || project.timeDuration || project.ageWhenMade !== undefined) && (
+            <dl className="dialog-meta">
+              {project.isOngoing !== undefined && (
+                <div>
+                  <dt className="dialog-meta-label">Status</dt>
+                  <dd className="dialog-meta-value">{project.isOngoing ? 'Ongoing' : 'Completed'}</dd>
+                </div>
+              )}
+              {project.timeDuration && (
+                <div>
+                  <dt className="dialog-meta-label">Duration</dt>
+                  <dd className="dialog-meta-value">{project.timeDuration}</dd>
+                </div>
+              )}
+              {project.ageWhenMade !== undefined && (
+                <div>
+                  <dt className="dialog-meta-label">Age at the time</dt>
+                  <dd className="dialog-meta-value">{project.ageWhenMade}</dd>
+                </div>
+              )}
+            </dl>
+          )}
 
           <div className="dialog-tags" aria-label="Technologies">
             {project.technology.map((technology) => <span className="dialog-tag" key={technology}>{technology}</span>)}

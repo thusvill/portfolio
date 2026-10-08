@@ -41,6 +41,7 @@ Link icons are selected from the URL: GitHub repositories use a branch icon, rel
 - `about`
 - `theme`
 - `font size <14-20>`
+- `font size <16-20>`
 - `clear`
 - `clear`
 - `exit`

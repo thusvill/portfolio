@@ -122,7 +122,7 @@ function PortfolioApp() {
             </div>
             <div className="intro-aside__item">
               <span>GRAPHICS</span>
-              <p>Vulkan / Metal / RHI</p>
+              <p>Vulkan / RHI</p>
             </div>
             <div className="intro-aside__item">
               <span>PLATFORMS</span>

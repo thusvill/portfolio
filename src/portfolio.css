@@ -224,7 +224,7 @@ dialog[open]::backdrop { opacity: 1; }
 .status-dot { width: 7px; height: 7px; flex: 0 0 auto; border: 1px solid var(--ink); border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--soft); }
 h1, h2, h3, p, figure { margin-top: 0; }
 h1, h2, h3 { color: var(--ink); font-weight: 500; }
-h1 { margin-bottom: 22px; font-size: calc(clamp(48px, 7vw, 88px) * var(--font-scale, 1)); line-height: 0.99; letter-spacing: 0; }
+h1 { margin-bottom: 22px; font-size: calc(clamp(42px, 5.8vw, 72px) * var(--font-scale, 1)); line-height: 0.99; letter-spacing: 0; }
 .cursor-mark { font-size: 0.8em; }
 .intro-role { margin-bottom: 16px; color: var(--quiet); font-size: calc(12px * var(--font-scale, 1)); }
 .intro-role span { margin: 0 5px; color: var(--ink); }
