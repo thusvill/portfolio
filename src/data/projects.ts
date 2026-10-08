@@ -23,7 +23,7 @@ export const projects: Project[] = [
     name: 'LiveWallpaperMacOS',
     description: 'An open-source live wallpaper app for macOS 14+. Play video wallpapers on the desktop, manage multiple displays, and install with Homebrew.',
     category: 'macOS application',
-    technology: ['Objective-C++', 'SwiftUI', 'CMake'],
+    technology: ['Objective C++', 'SwiftUI', 'CMake'],
     links: [
       { label: 'GitHub repository', url: 'https://github.com/thusvill/LiveWallpaperMacOS' },
       { label: 'Releases', url: 'https://github.com/thusvill/LiveWallpaperMacOS/releases' },
@@ -35,7 +35,7 @@ export const projects: Project[] = [
     id: 'advance-wallpaper-manager',
     slug: 'advance-wallpaper-manager',
     name: 'Advance Wallpaper Manager',
-    description: 'An Android depth-wallpaper tool that places a clock behind a segmented foreground, using on-device models and a native C++ rendering pipeline.',
+    description: 'An Android depth wallpaper tool that places a clock behind a segmented foreground, using on device models and a native C++ rendering pipeline.',
     category: 'Android application',
     technology: ['Kotlin', 'Jetpack Compose', 'C++', 'TensorFlow Lite'],
     links: [
@@ -72,9 +72,9 @@ export const projects: Project[] = [
     id: 'vector-vertex',
     slug: 'vector-vertex',
     name: 'Vector Vertex',
-    description: 'A custom C++ game engine focused on low-level graphics architecture, with Vulkan and Metal backends behind a Render Hardware Interface.',
+    description: 'A custom C++ game engine focused on low level graphics architecture, with Vulkan backend behind a Render Hardware Interface.',
     category: 'Game engine',
-    technology: ['C++', 'Vulkan', 'Metal', 'RHI'],
+    technology: ['C++', 'Vulkan', 'RHI'],
     links: [
       { label: 'GitHub repository', url: 'https://github.com/thusvill/VectorVertexOld' },
     ],
