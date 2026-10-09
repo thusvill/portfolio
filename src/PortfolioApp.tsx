@@ -25,7 +25,12 @@ function PortfolioApp() {
   })
   const [terminalOpen, setTerminalOpen] = useState(false)
   const [inlineTerminalVisible, setInlineTerminalVisible] = useState(true)
-  const [tutorialOpen, setTutorialOpen] = useState(true)
+  const [tutorialOpen, setTutorialOpen] = useState(() => {
+    // Keyboard shortcuts are meaningless on touch-first / small screens, so don't
+    // pop the quick-reference dialog there in the first place.
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse), (hover: none), (max-width: 720px)').matches) return false
+    return true
+  })
   const cursorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -43,11 +48,91 @@ function PortfolioApp() {
     if (!cursor || !window.matchMedia('(pointer: fine)').matches) return
 
     const moveCursor = (event: PointerEvent) => {
+      // Touch taps fire a single pointermove and then go silent, which left the
+      // custom cursor frozen at the tap point. Only track mouse/pen movement.
+      if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
+      cursor.classList.remove('is-hidden')
       cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`
     }
 
+    const pressCursor = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') {
+        cursor.classList.add('is-hidden')
+        return
+      }
+      cursor.classList.add('is-pressed')
+    }
+
+    const HOVER_SELECTOR = 'a, button, input, select, textarea, [role="button"]'
+
+    const updateHover = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') {
+        cursor.classList.remove('is-hovering')
+        return
+      }
+      const target = event.target
+      if (target instanceof HTMLElement && target.closest(HOVER_SELECTOR)) {
+        cursor.classList.add('is-hovering')
+      } else {
+        cursor.classList.remove('is-hovering')
+      }
+    }
+
+    const clearHover = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') {
+        cursor.classList.remove('is-hovering')
+        return
+      }
+      const related = event.relatedTarget
+      if (!(related instanceof HTMLElement) || !related.closest(HOVER_SELECTOR)) {
+        cursor.classList.remove('is-hovering')
+      }
+    }
+
+    const releaseCursor = () => {
+      cursor.classList.remove('is-pressed')
+      cursor.classList.remove('is-hovering')
+    }
+    const hideCursor = () => cursor.classList.add('is-hidden')
+    const handleWindowBlur = () => {
+      releaseCursor()
+      hideCursor()
+    }
+    const handleFocusIn = (event: FocusEvent) => {
+      // Touch taps move focus to the tapped button but never fire another
+      // pointermove, so don't hide/reposition the cursor for touch focus.
+      const target = event.target
+      if (target instanceof HTMLElement && target.matches('input, textarea, select, [contenteditable="true"]')) {
+        hideCursor()
+      }
+    }
+
     window.addEventListener('pointermove', moveCursor, { passive: true })
-    return () => window.removeEventListener('pointermove', moveCursor)
+    window.addEventListener('pointermove', updateHover, { passive: true })
+    window.addEventListener('pointerdown', pressCursor, { passive: true })
+    window.addEventListener('pointerup', releaseCursor, { passive: true })
+    window.addEventListener('pointercancel', releaseCursor, { passive: true })
+    window.addEventListener('blur', handleWindowBlur)
+    document.documentElement.addEventListener('mouseleave', hideCursor)
+    document.documentElement.addEventListener('pointerleave', clearHover)
+    document.addEventListener('focusin', handleFocusIn)
+    // Touch leaves sticky :hover behind on the tapped element, which used to
+    // keep the crosshair collapsed. Clear it on the next touch interaction.
+    document.addEventListener('touchend', releaseCursor, { passive: true })
+    document.addEventListener('touchcancel', releaseCursor, { passive: true })
+    return () => {
+      window.removeEventListener('pointermove', moveCursor)
+      window.removeEventListener('pointermove', updateHover)
+      window.removeEventListener('pointerdown', pressCursor)
+      window.removeEventListener('pointerup', releaseCursor)
+      window.removeEventListener('pointercancel', releaseCursor)
+      window.removeEventListener('blur', handleWindowBlur)
+      document.documentElement.removeEventListener('mouseleave', hideCursor)
+      document.documentElement.removeEventListener('pointerleave', clearHover)
+      document.removeEventListener('focusin', handleFocusIn)
+      document.removeEventListener('touchend', releaseCursor)
+      document.removeEventListener('touchcancel', releaseCursor)
+    }
   }, [])
 
   useEffect(() => {

@@ -15,6 +15,11 @@ function ShortcutsTutorial({ open, onClose, onOpenTerminal }: ShortcutsTutorialP
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
+    // Never pop the keyboard shortcut reference on touch-first / small screens.
+    if (open && window.matchMedia('(pointer: coarse), (hover: none), (max-width: 720px)').matches) {
+      if (dialog.open) dialog.close()
+      return
+    }
     if (open && !dialog.open) {
       dialog.showModal()
       dismissButtonRef.current?.focus()

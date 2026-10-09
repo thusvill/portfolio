@@ -137,8 +137,13 @@ dialog[open]::backdrop { opacity: 1; }
     height: 38px;
     margin: -19px 0 0 -19px;
     pointer-events: none;
-    transition: transform 58ms linear;
+    transition: transform 58ms linear, opacity 160ms ease;
   }
+  .custom-crosshair.is-pressed .crosshair-arm--top { transform: translateY(7px); }
+  .custom-crosshair.is-pressed .crosshair-arm--bottom { transform: translateY(-7px); }
+  .custom-crosshair.is-pressed .crosshair-arm--left { transform: translateX(7px); }
+  .custom-crosshair.is-pressed .crosshair-arm--right { transform: translateX(-7px); }
+  .custom-crosshair.is-hidden { opacity: 0; }
   .crosshair-arm {
     position: absolute;
     background: var(--ink);
@@ -150,14 +155,18 @@ dialog[open]::backdrop { opacity: 1; }
   .crosshair-arm--left, .crosshair-arm--right { top: 18px; width: 9px; height: 2px; }
   .crosshair-arm--left { left: 0; }
   .crosshair-arm--right { right: 0; }
-  .site-shell:has(:focus) .crosshair-arm--top { transform: translateY(7px); }
-  .site-shell:has(:focus) .crosshair-arm--bottom { transform: translateY(-7px); }
-  .site-shell:has(:focus) .crosshair-arm--left { transform: translateX(7px); }
-  .site-shell:has(:focus) .crosshair-arm--right { transform: translateX(-7px); }
-  .site-shell:has(:is(a, button, [role='button']):hover) .crosshair-arm--top { transform: translateY(7px); }
-  .site-shell:has(:is(a, button, [role='button']):hover) .crosshair-arm--bottom { transform: translateY(-7px); }
-  .site-shell:has(:is(a, button, [role='button']):hover) .crosshair-arm--left { transform: translateX(7px); }
-  .site-shell:has(:is(a, button, [role='button']):hover) .crosshair-arm--right { transform: translateX(-7px); }
+  .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--top, .custom-crosshair.is-hovering .crosshair-arm--top { transform: translateY(7px); }
+  .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--bottom, .custom-crosshair.is-hovering .crosshair-arm--bottom { transform: translateY(-7px); }
+  .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--left, .custom-crosshair.is-hovering .crosshair-arm--left { transform: translateX(7px); }
+  .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--right, .custom-crosshair.is-hovering .crosshair-arm--right { transform: translateX(-7px); }
+  /* Touch keeps :hover stuck on the tapped element, which used to freeze the
+     crosshair collapsed. Only honor sticky CSS hover where hover truly exists. */
+  @media (hover: none) {
+    .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--top,
+    .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--bottom,
+    .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--left,
+    .site-shell:has(:is(a, button, input, [role='button']):hover) .crosshair-arm--right { transform: none; }
+  }
   dialog, dialog button, dialog a { cursor: crosshair; }
 }
 
