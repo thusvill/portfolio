@@ -30,18 +30,14 @@ export const skills: Skill[] = [
 
 export const qualifications: Qualification[] = [
   {
-    name: 'BSc Honours in Computer Science',
+    name: 'BSc Honours in Computer Science | Undergraduate',
     issuer: 'Faculty of Computing and Technology, University of Kelaniya',
-    detail: '4 year degree program',
+    detail: '',
   },
   {
-    name: 'G.C.E. Advanced Level 1st attempt',
-    issuer: 'Combined Mathematics: C | Physics: C | ICT: A',
-    detail: 'Results',
+    name: 'G.C.E. Advanced Level',
+    issuer: '',
+    detail: '',
   },
-  {
-    name: 'G.C.E. Advanced Level 2nd attempt',
-    issuer: 'Pending',
-    detail: 'Results pending',
-  },
+  
 ]

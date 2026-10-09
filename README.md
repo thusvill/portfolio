@@ -28,7 +28,7 @@ Image folders are pre-created using the `slug` from `src/data/projects.ts`:
 - `src/img/vector-vertex/`
 - `src/img/tvisualiser/`
 
-Each project folder contains `thumbnail/`, `appicon/`, and `screenshots/` subfolders. Add `.png`, `.jpg`, `.jpeg`, `.webp`, or `.avif` images with lowercase extensions. No exact filename is required. For predictable selection, use names such as `01-cover.webp`, `02-detail.png`, and `03-settings.jpg`; the card uses the first alphabetical image in `thumbnail/`, falling back to `appicon/` and then `screenshots/`. The project dialog displays the available images as a gallery. Projects without images use the built-in terminal-style fallback.
+Each project folder contains `thumbnail/`, `appicon/`, and `screenshots/` subfolders. Add `.png`, `.jpg`, `.jpeg`, `.webp`, or `.avif` images, and `.mp4`, `.webm`, `.ogv`, or `.mov` videos with lowercase extensions. No exact filename is required. For predictable selection, use names such as `01-cover.webp`, `02-detail.png`, and `03-settings.jpg`; project cards use the first alphabetical app icon, filling the preview, or fall back to the first available image. The project dialog opens on the first item in `thumbnail/` (image or video), then displays available thumbnails and screenshots without app icons. Projects without images use the built-in terminal-style fallback.
 
 Link icons are selected from the URL: GitHub repositories use a branch icon, release/download URLs use a download icon, and other destinations use an external-link icon.
 

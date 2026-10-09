@@ -17,7 +17,7 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
   const dialogRef = useRef<HTMLDialogElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0)
-  const media = getProjectMedia(project.slug)
+  const media = getProjectMedia(project.slug).filter((item) => item.group !== 'appicon')
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -65,7 +65,7 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
 
       <div className="dialog-content">
         <div className="dialog-gallery">
-          <ProjectArtwork project={project} imageUrl={media[selectedMediaIndex]?.url} />
+          <ProjectArtwork project={project} media={media[selectedMediaIndex] ?? null} />
           {media.length > 1 && (
             <div className="dialog-thumbnails" aria-label="Project screenshots">
               {media.map((item, mediaIndex) => (
@@ -73,11 +73,15 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
                   className="dialog-thumbnail"
                   type="button"
                   key={item.path}
-                  aria-label={`Show project image ${mediaIndex + 1}`}
+                  aria-label={`Show project media ${mediaIndex + 1}`}
                   aria-pressed={mediaIndex === selectedMediaIndex}
                   onClick={() => setSelectedMediaIndex(mediaIndex)}
                 >
-                  <img src={item.url} alt="" loading="lazy" />
+                  {item.type === 'video' ? (
+                    <video src={item.url} muted playsInline preload="metadata" />
+                  ) : (
+                    <img src={item.url} alt="" loading="lazy" />
+                  )}
                 </button>
               ))}
             </div>

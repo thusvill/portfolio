@@ -1,5 +1,5 @@
 const imageFiles = Object.entries(
-  import.meta.glob('../img/**/*.{png,jpg,jpeg,webp,avif}', {
+  import.meta.glob('../img/**/*.{png,jpg,jpeg,webp,avif,mp4,webm,ogv,mov}', {
     eager: true,
     import: 'default',
     query: '?url',
@@ -10,6 +10,7 @@ export interface ProjectMedia {
   path: string
   url: string
   group: 'thumbnail' | 'appicon' | 'screenshots' | 'other'
+  type: 'image' | 'video'
 }
 
 export function getProjectMedia(slug: string): ProjectMedia[] {
@@ -28,7 +29,9 @@ export function getProjectMedia(slug: string): ProjectMedia[] {
             ? 'screenshots'
             : 'other'
 
-      return { path, url, group }
+      const type: ProjectMedia['type'] = /\.(mp4|webm|ogv|mov)$/i.test(path) ? 'video' : 'image'
+
+      return { path, url, group, type }
     })
     .sort((first, second) => {
       return order[first.group] - order[second.group] || first.path.localeCompare(second.path)
