@@ -5,7 +5,7 @@ export const profile = {
   role: 'Game Engine Developer',
   location: 'Western Province, Sri Lanka',
   bio: 'Computer science student building game engines, graphics systems, and native applications across desktop and mobile platforms.',
-  education: 'BSc Honours in Computer Science, University of Kelaniya',
+  education: 'BSc Honours in Computer Science (Undergraduate), University of Kelaniya',
   github: 'https://github.com/thusvill',
   email: 'thusvill@gmail.com',
   linkedin: 'https://www.linkedin.com/in/bios-thushvill-pansilushakthi-803366272',
