@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Expand, X } from 'lucide-react'
 import type { Project } from '../data/projects'
 import { getProjectMedia } from '../lib/projectAssets'
+import MediaLightbox from './MediaLightbox'
 import ProjectArtwork from './ProjectArtwork'
 import ProjectLinks from './ProjectLinks'
 
@@ -17,6 +18,7 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
   const dialogRef = useRef<HTMLDialogElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const media = getProjectMedia(project.slug).filter((item) => item.group !== 'appicon')
 
   useEffect(() => {
@@ -27,8 +29,19 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
   }, [])
 
   useEffect(() => setSelectedMediaIndex(0), [project.id])
+  useEffect(() => setLightboxOpen(false), [project.id])
+
+  const selectedMedia = media[selectedMediaIndex] ?? null
+  const touchStartX = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
+  const touchMoved = useRef(false)
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
+    if (lightboxOpen) {
+      // Let the fullscreen viewer own keyboard input while it is open.
+      if (event.key === 'Escape') event.preventDefault()
+      return
+    }
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
       onNavigate(-1)
@@ -65,26 +78,80 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
 
       <div className="dialog-content">
         <div className="dialog-gallery">
-          <ProjectArtwork project={project} media={media[selectedMediaIndex] ?? null} />
+          <button
+            className="dialog-main-media"
+            type="button"
+            onClick={() => {
+              if (touchMoved.current) {
+                touchMoved.current = false
+                return
+              }
+              if (selectedMedia) setLightboxOpen(true)
+            }}
+            onTouchStart={(event) => {
+              const touch = event.touches[0]
+              touchStartX.current = touch.clientX
+              touchStartY.current = touch.clientY
+              touchMoved.current = false
+            }}
+            onTouchMove={(event) => {
+              if (touchStartX.current === null || touchStartY.current === null) return
+              const touch = event.touches[0]
+              const deltaX = touch.clientX - touchStartX.current
+              const deltaY = touch.clientY - touchStartY.current
+              if (Math.abs(deltaX) > 12 || Math.abs(deltaY) > 12) touchMoved.current = true
+            }}
+            onTouchEnd={(event) => {
+              if (touchStartX.current === null || touchStartY.current === null || media.length < 2) return
+              const touch = event.changedTouches[0]
+              const deltaX = touch.clientX - touchStartX.current
+              const deltaY = touch.clientY - touchStartY.current
+              touchStartX.current = null
+              touchStartY.current = null
+              if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+                event.preventDefault()
+                setSelectedMediaIndex((current) => (current + (deltaX < 0 ? 1 : -1) + media.length) % media.length)
+              }
+            }}
+            aria-label={selectedMedia ? `Open fullscreen viewer for ${project.name}, image ${selectedMediaIndex + 1} of ${media.length}` : `${project.name} preview`}
+            title={selectedMedia ? 'Open fullscreen viewer' : undefined}
+            disabled={!selectedMedia}
+          >
+            <ProjectArtwork project={project} media={selectedMedia} />
+            {selectedMedia && (
+              <span className="dialog-main-media__expand" aria-hidden="true">
+                <Expand size={14} /> TAP TO EXPAND
+              </span>
+            )}
+          </button>
           {media.length > 1 && (
-            <div className="dialog-thumbnails" aria-label="Project screenshots">
-              {media.map((item, mediaIndex) => (
-                <button
-                  className="dialog-thumbnail"
-                  type="button"
-                  key={item.path}
-                  aria-label={`Show project media ${mediaIndex + 1}`}
-                  aria-pressed={mediaIndex === selectedMediaIndex}
-                  onClick={() => setSelectedMediaIndex(mediaIndex)}
-                >
-                  {item.type === 'video' ? (
-                    <video src={item.url} muted playsInline preload="metadata" />
-                  ) : (
-                    <img src={item.url} alt="" loading="lazy" />
-                  )}
-                </button>
-              ))}
-            </div>
+            <>
+              <p className="dialog-media-count" aria-live="polite">
+                {selectedMediaIndex + 1} / {media.length} · SWIPE OR TAP THUMBNAILS
+              </p>
+              <div className="dialog-thumbnails" aria-label="Project screenshots">
+                {media.map((item, mediaIndex) => (
+                  <button
+                    className="dialog-thumbnail"
+                    type="button"
+                    key={item.path}
+                    aria-label={`Show project media ${mediaIndex + 1}`}
+                    aria-pressed={mediaIndex === selectedMediaIndex}
+                    onClick={() => setSelectedMediaIndex(mediaIndex)}
+                    onDoubleClick={() => {
+                      setSelectedMediaIndex(mediaIndex)
+                      setLightboxOpen(true)
+                    }}
+                  >
+                    {item.type === 'video' ? (
+                      <video src={item.url} muted playsInline preload="metadata" />
+                    ) : (
+                      <img src={item.url} alt="" loading="lazy" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
@@ -128,6 +195,15 @@ function ProjectDialog({ project, index, total, onClose, onNavigate }: ProjectDi
           </div>
         </div>
       </div>
+      {lightboxOpen && selectedMedia && (
+        <MediaLightbox
+          media={media}
+          index={selectedMediaIndex}
+          projectName={project.name}
+          onClose={() => setLightboxOpen(false)}
+          onNavigate={setSelectedMediaIndex}
+        />
+      )}
     </dialog>
   )
 }
